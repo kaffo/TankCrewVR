@@ -83,18 +83,20 @@ public class ControllerManager : MonoBehaviour {
         yield break;
     }
 
-    IEnumerator TurretShellFired()
+    IEnumerator TurretShellFired(GameObject shell)
     {
-        Vector3 origRot = turret.transform.localEulerAngles;
-        Vector3 kickbackRot = origRot + new Vector3(-20f, 0, 0);
-        while (turret.transform.localEulerAngles.x > kickbackRot.x)
+        Quaternion origRot = turret.transform.localRotation;
+        yield return new WaitUntil(() => shell.activeSelf);
+        for (int i = 0; i < 2; i++)
         {
+            //Debug.Log("1: " + turret.transform.localEulerAngles);
             turret.transform.localEulerAngles += new Vector3(-10f, 0, 0);
             yield return null;
         }
-        while (turret.transform.localEulerAngles.x < origRot.x)
+        for (int i = 0; i < 10; i++)
         {
-            turret.transform.localEulerAngles += new Vector3(1f, 0, 0);
+            //Debug.Log("2: " + turret.transform.localEulerAngles);
+            turret.transform.localRotation = Quaternion.RotateTowards(turret.transform.localRotation, origRot, 2f);
             yield return null;
         }
         yield break;
@@ -122,7 +124,7 @@ public class ControllerManager : MonoBehaviour {
             shellController.barrel = barrel;
             shellFireAudio.GetComponent<AudioSource>().Play();
             canFire = false;
-            StartCoroutine("TurretShellFired");
+            StartCoroutine("TurretShellFired", shell);
         }
         else
         {

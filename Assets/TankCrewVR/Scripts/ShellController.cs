@@ -27,8 +27,12 @@ public class ShellController : MonoBehaviour
         }
     }
 
-    void onOnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
-        Destroy(gameObject);
+        Debug.Log("hit");
+        foreach (ContactPoint contact in collision.contacts)
+        {
+            Debug.DrawRay(contact.point, contact.normal, Color.white);
+        }
     }
 }
