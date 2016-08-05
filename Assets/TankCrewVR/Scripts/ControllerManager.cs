@@ -6,6 +6,9 @@ public class ControllerManager : MonoBehaviour {
     public GameObject leftController;
     public GameObject rightController;
     public GameObject turret;
+    public GameObject barrel;
+
+    public GameObject shellTemplate;
 
     public void Start() {
         /*if (GetComponent<VRTK_ControllerEvents>() == null)
@@ -19,6 +22,7 @@ public class ControllerManager : MonoBehaviour {
         //leftController.GetComponent<VRTK_ControllerEvents>().TriggerReleased += new ControllerInteractionEventHandler(DoLeftTriggerReleased);
 
         rightController.GetComponent<VRTK_ControllerEvents>().TriggerPressed += new ControllerInteractionEventHandler(DoRightTriggerPressed);
+        rightController.GetComponent<VRTK_ControllerEvents>().GripPressed += new ControllerInteractionEventHandler(DoRightGripPressed);
 
         /*leftController.GetComponent<VRTK_ControllerEvents>().TriggerAxisChanged += new ControllerInteractionEventHandler(DoTriggerAxisChanged);
         
@@ -83,6 +87,15 @@ public class ControllerManager : MonoBehaviour {
     {
         StartCoroutine("PitchTurret");
         //DebugLogger(e.controllerIndex, "TRIGGER", "pressed down", e);
+    }
+
+    private void DoRightGripPressed(object sender, ControllerInteractionEventArgs e)
+    {
+        GameObject shell = Instantiate(shellTemplate);
+        ShellController shellController = shell.GetComponent<ShellController>();
+
+        shellController.barrel = barrel;
+        barrel.GetComponent<AudioSource>().Play();
     }
 
     // Update is called once per frame
