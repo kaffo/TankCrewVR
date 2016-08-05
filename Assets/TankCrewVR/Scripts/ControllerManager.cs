@@ -8,7 +8,13 @@ public class ControllerManager : MonoBehaviour {
     public GameObject turret;
     public GameObject barrel;
 
+    public GameObject shellFireAudio;
+    public GameObject clickAudio;
+
     public GameObject shellTemplate;
+
+    private bool canFire = true;
+    private float fireTimer = 5f;
 
     public void Start() {
         /*if (GetComponent<VRTK_ControllerEvents>() == null)
@@ -77,6 +83,23 @@ public class ControllerManager : MonoBehaviour {
         yield break;
     }
 
+    IEnumerator TurretShellFired()
+    {
+        Vector3 origRot = turret.transform.localEulerAngles;
+        Vector3 kickbackRot = origRot + new Vector3(-20f, 0, 0);
+        while (turret.transform.localEulerAngles.x > kickbackRot.x)
+        {
+            turret.transform.localEulerAngles += new Vector3(-10f, 0, 0);
+            yield return null;
+        }
+        while (turret.transform.localEulerAngles.x < origRot.x)
+        {
+            turret.transform.localEulerAngles += new Vector3(1f, 0, 0);
+            yield return null;
+        }
+        yield break;
+    }
+
     private void DoLeftTriggerPressed(object sender, ControllerInteractionEventArgs e)
     {
         StartCoroutine("TurnTurret");
@@ -91,14 +114,32 @@ public class ControllerManager : MonoBehaviour {
 
     private void DoRightGripPressed(object sender, ControllerInteractionEventArgs e)
     {
-        GameObject shell = Instantiate(shellTemplate);
-        ShellController shellController = shell.GetComponent<ShellController>();
+        if (canFire)
+        {
+            GameObject shell = Instantiate(shellTemplate);
+            ShellController shellController = shell.GetComponent<ShellController>();
 
-        shellController.barrel = barrel;
-        barrel.GetComponent<AudioSource>().Play();
+            shellController.barrel = barrel;
+            shellFireAudio.GetComponent<AudioSource>().Play();
+            canFire = false;
+            StartCoroutine("TurretShellFired");
+        }
+        else
+        {
+            clickAudio.GetComponent<AudioSource>().Play();
+        }
     }
 
     // Update is called once per frame
     void Update () {
+        if (canFire == false && fireTimer > 0)
+        {
+            fireTimer -= Time.deltaTime;
+        }
+        else if (canFire == false && fireTimer <= 0)
+        {
+            canFire = true;
+            fireTimer = 5f;
+        }
     }
 }
