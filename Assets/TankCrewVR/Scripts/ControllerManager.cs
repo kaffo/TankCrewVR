@@ -9,6 +9,9 @@ public class ControllerManager : MonoBehaviour {
     public GameObject barrel;
     public GameObject gun;
 
+    public GameObject HBase;
+    public GameObject VBase;
+
     public GameObject shellFireAudio;
     public GameObject clickAudio;
     public GameObject reloadAudio;
@@ -56,18 +59,21 @@ public class ControllerManager : MonoBehaviour {
             Vector3 toMove;
             if (leftController.transform.localPosition.x < -0.05)
             {
+                HBase.transform.localEulerAngles = new Vector3(0, -leftController.transform.localPosition.x * 45, 0);
                 toMove = new Vector3(0, 1f * leftController.transform.localPosition.x, 0);
                 if (toMove.y < -0.5f) { toMove.y = -0.5f; }
                 turret.transform.localEulerAngles += toMove;
             }
             else if (leftController.transform.localPosition.x > 0.05)
             {
+                HBase.transform.localEulerAngles = new Vector3(0, -leftController.transform.localPosition.x * 45, 0);
                 toMove = new Vector3(0, 1f * leftController.transform.localPosition.x, 0);
                 if (toMove.y > 0.5f) { toMove.y = 0.5f; }
                 turret.transform.localEulerAngles += toMove;
             }
             yield return null;
         }
+        HBase.transform.localEulerAngles = Vector3.zero;
         yield break;
     }
 
@@ -76,22 +82,27 @@ public class ControllerManager : MonoBehaviour {
         while (rightController.GetComponent<VRTK_ControllerEvents>().triggerPressed == true)
         {
             Vector3 toMove;
-            if (rightController.transform.localPosition.y < -0.05 && gun.transform.localEulerAngles.x < 70)
+            //Debug.Log("Pos: " + rightController.transform.localPosition);
+            //Debug.Log("Ang: " + gun.transform.localEulerAngles.x);
+            if (rightController.transform.localPosition.y < -0.05 && gun.transform.localEulerAngles.x < 358)
             {
                 //Debug.Log("Pos: " + rightController.transform.localPosition);
+                VBase.transform.localEulerAngles = new Vector3(rightController.transform.localPosition.y * 90, 0, 90);
                 toMove = new Vector3(1f * -rightController.transform.localPosition.y, 0, 0);
                 if (toMove.x > 0.5f) { toMove.x = 0.5f; }
                 gun.transform.localEulerAngles += toMove;
             }
-            else if (rightController.transform.localPosition.y > 0.05 && gun.transform.localEulerAngles.x > 0)
+            else if (rightController.transform.localPosition.y > 0.05 && (gun.transform.localEulerAngles.x > 300 || gun.transform.localEulerAngles.x < 25))
             {
                 //Debug.Log("Pos: " + rightController.transform.localPosition);
+                VBase.transform.localEulerAngles = new Vector3(rightController.transform.localPosition.y * 90, 0, 90);
                 toMove = new Vector3(1f * -rightController.transform.localPosition.y, 0, 0);
                 if (toMove.x < -0.5f) { toMove.x = -0.5f; }
                 gun.transform.localEulerAngles += toMove;
             }
             yield return null;
         }
+        VBase.transform.localEulerAngles = new Vector3(0, 0, 90);
         yield break;
     }
 
@@ -105,10 +116,10 @@ public class ControllerManager : MonoBehaviour {
             turret.transform.localEulerAngles += new Vector3(-10f, 0, 0);
             yield return null;
         }
-        for (int i = 0; i < 50; i++)
+        for (int i = 0; i < 20; i++)
         {
             //Debug.Log("2: " + turret.transform.localEulerAngles);
-            turret.transform.localRotation = Quaternion.RotateTowards(turret.transform.localRotation, origRot, 0.05f);
+            turret.transform.localRotation = Quaternion.RotateTowards(turret.transform.localRotation, origRot, 0.1f);
             yield return null;
         }
         yield break;
