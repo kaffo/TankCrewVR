@@ -13,7 +13,7 @@ public class ShellController : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         transform.rotation = barrel.transform.rotation;
-        transform.position = barrel.transform.TransformPoint(barrel.transform.localPosition + new Vector3(0, 1, 0));
+        transform.position = barrel.transform.TransformPoint(barrel.transform.localPosition + new Vector3(0, 1.5f, 0));
         rb.AddForce(barrel.transform.up * shellSpeed, ForceMode.Impulse);
         //Debug.Log(barrel.transform.up * shellSpeed);
     }
@@ -32,7 +32,9 @@ public class ShellController : MonoBehaviour
         Debug.Log("hit");
         foreach (ContactPoint contact in collision.contacts)
         {
-            Debug.DrawRay(contact.point, contact.normal, Color.white);
+            //Debug.DrawRay(contact.point, contact.normal, Color.white);
         }
+        Destroy(collision.collider.gameObject);
+        Destroy(gameObject);
     }
 }
