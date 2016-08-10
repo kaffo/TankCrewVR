@@ -110,16 +110,16 @@ public class ControllerManager : MonoBehaviour {
     {
         Quaternion origRot = turret.transform.localRotation;
         yield return new WaitUntil(() => shell.activeSelf);
-        for (int i = 0; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
-            //Debug.Log("1: " + turret.transform.localEulerAngles);
-            turret.transform.localEulerAngles += new Vector3(-10f, 0, 0);
+            Debug.Log("1: " + turret.transform.localEulerAngles);
+            turret.transform.localEulerAngles += new Vector3(-5f, 0, 0);
             yield return null;
         }
         for (int i = 0; i < 20; i++)
         {
-            //Debug.Log("2: " + turret.transform.localEulerAngles);
-            turret.transform.localRotation = Quaternion.RotateTowards(turret.transform.localRotation, origRot, 0.1f);
+            Debug.Log("2: " + turret.transform.localEulerAngles);
+            turret.transform.localRotation = Quaternion.RotateTowards(turret.transform.localRotation, origRot, 1f);
             yield return null;
         }
         yield break;
